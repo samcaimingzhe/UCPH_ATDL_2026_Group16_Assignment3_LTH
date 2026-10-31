@@ -1,0 +1,42 @@
+exp_name: imp_global_rw2
+device: auto
+split_seed: 0
+max_train: 10000
+results_dir: results/grinsztajn
+
+# name -> OpenML task id (Grinsztajn suites, see LeoGrin/tabular-benchmark README:
+# 336 reg-num, 337 clf-num, 335 reg-cat, 334 clf-cat)
+datasets:
+  eye_movements: 361070   # suite 337, classification
+  heloc: 361278           # suite 337, classification
+  wine_quality: 361076    # suite 336, regression
+  cpu_act: 361072         # suite 336, regression
+
+model_seeds: [42, 43, 44, 45, 46]
+
+tune:
+  n_trials: 50
+  seed: 42            # model_seed and TPE sampler seed used during tuning
+  max_epochs: 300
+  patience: 30        # early stopping on val loss
+  min_epochs: 50      # floor for the fixed epoch count used afterwards
+  # search space after Grinsztajn et al. 2022 (MLP)
+  space:
+    depth: [1, 8]
+    width: [16, 1024]          # log-uniform int
+    lr: [1.0e-5, 1.0e-2]       # log-uniform
+    weight_decay: [1.0e-8, 1.0e-3]
+    dropout: [0.0, 0.5]
+    batch_size: [256, 512, 1024]
+  fixed:
+    scheduler: none
+    layernorm: false
+
+pruning:
+  mode: global
+  rate: 0.2           # fraction of remaining weights pruned per round
+  rounds: 15
+  out_factor: 0.5     # output layer pruned at rate * out_factor
+  rewind_frac: 0.02   # rewind step k = round(rewind_frac * total_steps); 0 -> original LTH
+
+controls: [reinit, random_mask_layerwise, random_mask_global]

@@ -1,0 +1,6 @@
+base: default.yaml
+exp_name: imp_uniform
+pruning:
+  mode: uniform
+controls: [reinit, random_mask_layerwise, random_mask_global]
+save_full_rewind: false

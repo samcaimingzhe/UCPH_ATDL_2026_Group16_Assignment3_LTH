@@ -1,0 +1,7 @@
+# original LTH: rewind to initialization (k = 0), as a control for rewind_frac = 0.02
+base: default.yaml
+exp_name: imp_global_rw0
+pruning:
+  rewind_frac: 0.0
+controls: [reinit, random_mask_layerwise]
+save_full_rewind: false

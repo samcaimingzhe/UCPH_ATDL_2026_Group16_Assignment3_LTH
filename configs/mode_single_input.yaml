@@ -1,0 +1,6 @@
+base: default.yaml
+exp_name: imp_single_input
+pruning:
+  mode: single_input
+controls: [reinit, random_mask_layerwise, random_mask_global]
+save_full_rewind: false

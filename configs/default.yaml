@@ -1,0 +1,62 @@
+exp_name: imp_global
+device: auto
+split_seed: 0
+max_train: 10000
+results_dir: results
+
+# name -> OpenML task id, TabArena-v0.1 (OpenML suite 457), classification pilot
+datasets:
+  credit-g: 363626
+  qsar-biodeg: 363696
+  students_dropout: 363704
+  churn: 363623
+  Bank_Customer_Churn: 363619
+  heloc: 363676
+  jm1: 363712
+  online_shoppers: 363691
+
+model_seeds: [42, 43, 44, 45, 46]
+
+tune:
+  n_trials: 50
+  seed: 42            # model_seed and TPE sampler seed used during tuning
+  max_epochs: 300
+  patience: 30        # early stopping on val loss
+  min_epochs: 50      # floor for the fixed epoch count used afterwards
+  # search space after Grinsztajn et al. 2022 (MLP)
+  space:
+    depth: [1, 8]
+    width: [16, 1024]          # log-uniform int
+    lr: [1.0e-5, 1.0e-2]       # log-uniform
+    weight_decay: [1.0e-8, 1.0e-3]
+    dropout: [0.0, 0.5]
+    batch_size: [256, 512, 1024]
+  fixed:
+    scheduler: none
+    layernorm: false
+
+pruning:
+  mode: global
+  rate: 0.2           # fraction of remaining weights pruned per round
+  rounds: 15
+  out_factor: 0.5     # output layer pruned at rate * out_factor
+  min_keep_frac: 0.01 # single_* modes: never prune a layer below this fraction
+  rewind_frac: 0.02   # rewind step k = round(rewind_frac * total_steps); 0 -> original LTH
+
+controls: [reinit, random_mask_layerwise, random_mask_global, clean_ticket]  # clean_ticket: noisy runs only
+
+noise:
+  apply_to_test: false
+  uninformative_method: permute   # or gaussian
+  transfer_from: imp_global       # clean experiment whose tickets the clean_ticket control uses
+  levels:
+    label_flip: [0, 0.1, 0.2, 0.4]
+    feature_gaussian: [0, 0.1, 0.5, 1.0]
+    uninformative: [0, 0.5, 1.0, 2.0]
+
+baselines:
+  exp_name: baselines
+  l1_grid: [1.0e-7, 3.0e-7, 1.0e-6, 3.0e-6, 1.0e-5, 3.0e-5, 1.0e-4]
+  dropout_add: [0.0, 0.1, 0.2, 0.3]     # added to the tuned dropout
+  max_dropout: 0.7
+  weight_decay_grid: [1.0e-3, 1.0e-2, 1.0e-1, 1.0]
