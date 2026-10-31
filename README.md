@@ -46,13 +46,6 @@ python paper/make_assets.py                        # paper figures and tables
 `configs/mode_{uniform,single_input,single_middle,single_last}.yaml` and `configs/rewind0.yaml`,
 then `analysis/run_all.py`.
 
-Grokking pilot (dense MLP, long training, strong weight decay / scaled init):
-
-```bash
-python run_grok.py                 # 3 datasets x 4 weight decays x 3 init scales, 5000 epochs
-python -m analysis.grok_stats      # memorisation / generalisation timing
-```
-
 ## Layout
 
 | Path | Contents |
@@ -66,7 +59,6 @@ python -m analysis.grok_stats      # memorisation / generalisation timing
 | `run_imp.py` | one IMP run with all controls |
 | `run_baselines.py` | dense + L1 and dense + strong weight decay baselines |
 | `run_grid.py` | parallel job runner over datasets, seeds, noise levels and GPUs |
-| `run_grok.py` | grokking pilot |
 | `analysis/` | result loading, statistics and figures (`run_all.py`) |
 | `configs/` | `default.yaml` (main), pruning-mode and rewind variants, old Grinsztajn setup |
 | `paper/` | ISBI paper source (`main.tex`, `refs.bib`, figures, tables, `make_assets.py`) |
@@ -100,13 +92,3 @@ Aggregated tables are in `results/analysis/tables/`.
 - **Statistics.** Paired Wilcoxon tests across datasets (n = 8). With 5 seeds the smallest
   possible two-sided p within a dataset is 0.0625, so per-dataset tests are descriptive only.
 
-## Citation
-
-```bibtex
-@misc{lth_tabular,
-  title  = {Do Lottery Tickets Help MLPs on Tabular Data? A Controlled Study of Sparse Masks as Feature Selectors},
-  author = {Anonymous},
-  year   = {2026},
-  note   = {Under review}
-}
-```
