@@ -8,11 +8,11 @@ import pandas as pd
 import pytest
 import torch
 
-from common import get_device, set_seed
-from data.noise import apply_noise
-from data.preprocess import preprocess
-from models.mlp import build_mlp
-from pruning.masks import Masker, magnitude_prune, target_kept
+from lth.common import get_device, set_seed
+from lth.data.noise import apply_noise
+from lth.data.preprocess import preprocess
+from lth.models.mlp import build_mlp
+from lth.pruning.masks import Masker, magnitude_prune, target_kept
 
 HP = {"depth": 3, "width": 64, "dropout": 0.0, "lr": 1e-3, "weight_decay": 0.0, "batch_size": 128}
 DEVICE = get_device()

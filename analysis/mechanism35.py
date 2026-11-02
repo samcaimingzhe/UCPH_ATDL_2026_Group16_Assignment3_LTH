@@ -31,8 +31,8 @@ from sklearn.ensemble import RandomForestClassifier
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis import style
 from analysis.load import feature_kept
-from common import ROOT, load_config
-from data.preprocess import load_dataset
+from lth.common import ROOT, load_config
+from lth.data.preprocess import load_dataset
 
 ROUND = 10
 R = ROOT / "results"

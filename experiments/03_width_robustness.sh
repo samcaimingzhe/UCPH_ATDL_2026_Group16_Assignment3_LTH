@@ -4,6 +4,6 @@
 cd "$(dirname "$0")/.."   # run from the repository root
 G="--gpus 0,1"
 for w in 256 512 1024; do
-  python3 run_grid.py --config configs/fixed_w$w.yaml --stage imp --workers 10 $G
-  python3 run_grid.py --config configs/fixed_w$w.yaml --stage baselines --workers 8 $G
+  python3 -m lth.run_grid --config configs/fixed_w$w.yaml --stage imp --workers 10 $G
+  python3 -m lth.run_grid --config configs/fixed_w$w.yaml --stage baselines --workers 8 $G
 done

@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis import style
 from analysis.fixed_width import per_seed
 from analysis.load import load_results
-from common import ROOT
+from lth.common import ROOT
 
 ALPHA = 0.05
 R = ROOT / "results"

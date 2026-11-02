@@ -14,9 +14,9 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
-from common import ROOT, load_config
-from run_imp import noise_tag, run_dir
-from tune import tuned_path
+from lth.common import ROOT, load_config
+from lth.run_imp import noise_tag, run_dir
+from lth.tune import tuned_path
 
 
 def noise_settings(cfg):
@@ -31,22 +31,22 @@ def enumerate_jobs(cfg, stage):
     for ds in cfg.get("dataset_subset") or cfg["datasets"]:  # subset: run only these, keep the full table
         if stage == "tune":
             if not tuned_path(cfg, ds).exists():
-                jobs.append(["tune.py", "--dataset", ds])
+                jobs.append(["lth.tune", "--dataset", ds])
         elif stage == "imp":
             for s in cfg["model_seeds"]:
                 if not (run_dir(cfg, ds, s) / "result.json").exists():
-                    jobs.append(["run_imp.py", "--dataset", ds, "--seed", str(s)])
+                    jobs.append(["lth.run_imp", "--dataset", ds, "--seed", str(s)])
         elif stage == "noise":
             for kind, i, lv in noise_settings(cfg):
                 for s in cfg["model_seeds"]:
                     if not (run_dir(cfg, ds, s, noise_tag(kind, lv)) / "result.json").exists():
-                        jobs.append(["run_imp.py", "--dataset", ds, "--seed", str(s), "--noise", kind, "--level-idx", str(i)])
+                        jobs.append(["lth.run_imp", "--dataset", ds, "--seed", str(s), "--noise", kind, "--level-idx", str(i)])
         elif stage == "baselines":
             exp = cfg["baselines"]["exp_name"]
             for kind, i, lv in [(None, 0, 0), *noise_settings(cfg)]:
                 tag = noise_tag(kind, lv)
                 if not all((run_dir(cfg, ds, s, tag, exp_name=exp) / "result.json").exists() for s in cfg["model_seeds"]):
-                    jobs.append(["run_baselines.py", "--dataset", ds]
+                    jobs.append(["lth.run_baselines", "--dataset", ds]
                                 + (["--noise", kind, "--level-idx", str(i)] if kind else []))
     return jobs
 
@@ -70,7 +70,7 @@ def main():
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=gpus[i % len(gpus)], OMP_NUM_THREADS="4")
         name = "_".join(job[1:][1::2]) + f"_{args.stage}"
         with open(log_dir / f"{name}.log", "w") as log:
-            rc = subprocess.call([sys.executable, *job, "--config", args.config], cwd=ROOT, env=env,
+            rc = subprocess.call([sys.executable, "-m", *job, "--config", args.config], cwd=ROOT, env=env,
                                  stdout=log, stderr=subprocess.STDOUT)
         print(f"{'OK ' if rc == 0 else 'FAIL'} {name}", flush=True)
         return rc

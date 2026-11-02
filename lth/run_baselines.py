@@ -10,12 +10,12 @@ import itertools
 import json
 import time
 
-from common import ROOT, get_device, load_config, set_seed, write_json_atomic
-from metrics import primary_metric
-from models.mlp import build_mlp
-from run_imp import load_data, noise_tag, run_dir
-from train import train
-from tune import load_tuned
+from lth.common import ROOT, get_device, load_config, set_seed, write_json_atomic
+from lth.metrics import primary_metric
+from lth.models.mlp import build_mlp
+from lth.run_imp import load_data, noise_tag, run_dir
+from lth.train import train
+from lth.tune import load_tuned
 
 
 def candidates(bc, hp):

@@ -5,11 +5,11 @@ import json
 
 import optuna
 
-from common import ROOT, get_device, load_config, set_seed, write_json_atomic
-from data.preprocess import load_dataset
-from metrics import primary_metric
-from models.mlp import build_mlp
-from train import train
+from lth.common import ROOT, get_device, load_config, set_seed, write_json_atomic
+from lth.data.preprocess import load_dataset
+from lth.metrics import primary_metric
+from lth.models.mlp import build_mlp
+from lth.train import train
 
 
 def tuned_path(cfg, dataset):

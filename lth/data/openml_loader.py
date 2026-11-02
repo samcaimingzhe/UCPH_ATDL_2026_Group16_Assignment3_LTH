@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from common import ROOT
+from lth.common import ROOT
 
 TARGET_COL = "__target__"
 

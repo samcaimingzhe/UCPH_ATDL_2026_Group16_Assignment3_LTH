@@ -14,7 +14,7 @@ from scipy.stats import wilcoxon
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis.load import load_results
-from common import ROOT
+from lth.common import ROOT
 
 R = ROOT / "results"
 ARCHS = {"tuned": ("imp_global", "baselines"),

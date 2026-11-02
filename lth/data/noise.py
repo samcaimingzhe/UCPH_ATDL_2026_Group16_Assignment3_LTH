@@ -12,7 +12,7 @@ kinds:
 import numpy as np
 import pandas as pd
 
-from data.preprocess import TabularData
+from lth.data.preprocess import TabularData
 
 SPLITS = ("train", "val", "test")
 

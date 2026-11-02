@@ -4,6 +4,6 @@
 cd "$(dirname "$0")/.."   # run from the repository root
 G="--gpus 0,1"
 C="--config configs/tabarena35.yaml"
-python3 run_grid.py $C --stage tune --workers 6 $G
-python3 run_grid.py $C --stage imp --workers 10 $G
-python3 run_grid.py $C --stage baselines --workers 8 $G
+python3 -m lth.run_grid $C --stage tune --workers 6 $G
+python3 -m lth.run_grid $C --stage imp --workers 10 $G
+python3 -m lth.run_grid $C --stage baselines --workers 8 $G

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, QuantileTransformer
 
-from data.openml_loader import fetch_task
+from lth.data.openml_loader import fetch_task
 
 
 @dataclass

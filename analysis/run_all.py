@@ -27,11 +27,11 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis import style
 from analysis.load import feature_kept, iter_runs, load_results
-from common import ROOT, load_config
-from metrics import primary_metric
+from lth.common import ROOT, load_config
+from lth.metrics import primary_metric
 
 style.apply()
-from run_imp import load_data
+from lth.run_imp import load_data
 
 STYLE = {
     "ticket": dict(color="#1f77b4", marker="o"),

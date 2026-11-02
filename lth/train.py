@@ -6,8 +6,8 @@ import numpy as np
 import torch
 from torch.utils.data import BatchSampler, DataLoader, RandomSampler
 
-from common import make_generator
-from metrics import compute_metrics
+from lth.common import make_generator
+from lth.metrics import compute_metrics
 
 
 class _Rows(torch.utils.data.Dataset):

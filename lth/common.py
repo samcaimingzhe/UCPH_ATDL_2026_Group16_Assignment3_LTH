@@ -12,7 +12,7 @@ import numpy as np
 import torch
 import yaml
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]  # repository root
 
 
 def set_seed(seed: int) -> None:

@@ -17,7 +17,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from analysis.load import load_results
-from common import ROOT, load_config
+from lth.common import ROOT, load_config
 
 GROUPS = {"splice": "helps", "SDSS17": "helps", "in_vehicle_coupon": "helps",
           "heloc": "no_help", "MIC": "no_help", "churn": "no_help"}

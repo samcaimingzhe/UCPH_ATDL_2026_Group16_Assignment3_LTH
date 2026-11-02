@@ -16,13 +16,13 @@ import time
 import numpy as np
 import torch
 
-from common import ROOT, get_device, load_config, mask_seed_for, noise_seed_for, set_seed, write_json_atomic
-from data.noise import apply_noise
-from data.preprocess import load_dataset
-from models.mlp import build_mlp
-from pruning.masks import Masker, magnitude_prune, random_mask_global, random_mask_layerwise, single_layer_name
-from train import steps_per_epoch, train
-from tune import load_tuned
+from lth.common import ROOT, get_device, load_config, mask_seed_for, noise_seed_for, set_seed, write_json_atomic
+from lth.data.noise import apply_noise
+from lth.data.preprocess import load_dataset
+from lth.models.mlp import build_mlp
+from lth.pruning.masks import Masker, magnitude_prune, random_mask_global, random_mask_layerwise, single_layer_name
+from lth.train import steps_per_epoch, train
+from lth.tune import load_tuned
 
 
 def noise_tag(kind, level):

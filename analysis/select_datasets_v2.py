@@ -1,8 +1,8 @@
-import sys; sys.path.insert(0, "/home/vpm582/lth_tabular")
+import sys; from pathlib import Path; sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import numpy as np, pandas as pd
 from analysis.load import load_results
-from common import load_config
-from data.preprocess import load_dataset
+from lth.common import load_config
+from lth.data.preprocess import load_dataset
 cfg = load_config("/home/vpm582/lth_tabular/configs/tabarena35.yaml")
 imp = load_results("/home/vpm582/lth_tabular/results/imp_global"); imp = imp[(imp.noise_kind == "none") & imp.dataset.isin(cfg["datasets"])]
 base = load_results("/home/vpm582/lth_tabular/results/baselines"); base = base[(base.noise_kind == "none") & base.dataset.isin(cfg["datasets"])]

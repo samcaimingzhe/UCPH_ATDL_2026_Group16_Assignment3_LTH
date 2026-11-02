@@ -52,8 +52,17 @@ The scripts assume two GPUs (`--gpus 0,1`); edit `G=` at the top to change this.
 | `experiments/04_case_study6.sh` | 6 datasets: noise, pruning modes, rewind k = 0 (needs 01) | Sec. 4.3, Appendix |
 | `experiments/05_analysis.sh` | all analyses and figures (CPU only) | all figures / tables |
 
-Each shell script calls `run_grid.py`, which lists the pending jobs of one stage (`tune`,
-`imp`, `noise`, `baselines`) for a config and runs them in parallel, one GPU per worker.
+Each shell script calls the job runner `python -m lth.run_grid`, which lists the pending jobs
+of one stage (`tune`, `imp`, `noise`, `baselines`) for a config and runs them in parallel, one
+GPU per worker. A single run can also be started directly, e.g.
+
+```bash
+python -m lth.run_imp --dataset heloc --seed 42 --config configs/tabarena35.yaml
+python -m lth.run_baselines --dataset heloc --config configs/tabarena35.yaml
+python -m lth.tune --dataset heloc --config configs/tabarena35.yaml
+```
+
+All commands are run from the repository root.
 
 ## Outputs for the paper (`paper_assets/`)
 
@@ -76,20 +85,20 @@ come from `analysis/run_all.py --config configs/complex6.yaml --out analysis_com
 
 | Path | Contents |
 |---|---|
-| `common.py` | seeds, device, config loading (`base:` inheritance) |
-| `data/` | OpenML loader, preprocessing and splits, noise injection |
-| `models/mlp.py` | MLP: `[Linear -> ReLU -> Dropout] x depth -> Linear`, no normalisation |
-| `train.py` | training loop, rewind checkpoint, mask re-applied after every step |
-| `tune.py` | Optuna (TPE) tuning; writes `results/tuned/<dataset>.json` |
-| `pruning/masks.py` | magnitude pruning (global / uniform / single layer), random masks |
-| `run_imp.py` | one IMP run with all controls |
-| `run_baselines.py` | dense + L1 and dense + strong regularisation baselines |
-| `run_grid.py` | parallel job runner over datasets, seeds, noise levels and GPUs |
+| `lth/` | core library (everything below is inside this package) |
+| `lth/common.py` | seeds, device, config loading (`base:` inheritance), repository paths |
+| `lth/data/` | OpenML loader, preprocessing and splits, noise injection |
+| `lth/models/mlp.py` | MLP: `[Linear -> ReLU -> Dropout] x depth -> Linear`, no normalisation |
+| `lth/train.py` | training loop, rewind checkpoint, mask re-applied after every step |
+| `lth/tune.py` | Optuna (TPE) tuning; writes `results/tuned/<dataset>.json` |
+| `lth/pruning/masks.py` | magnitude pruning (global / uniform / single layer), random masks |
+| `lth/run_imp.py` | one IMP run with all controls |
+| `lth/run_baselines.py` | dense + L1 and dense + strong regularisation baselines |
+| `lth/run_grid.py` | parallel job runner over datasets, seeds, noise levels and GPUs |
 | `configs/` | `default.yaml` (tuned protocol), `tabarena35*.yaml`, `fixed_w*.yaml`, `complex6.yaml`, `c6_*.yaml` |
 | `experiments/` | launch scripts, one per experiment |
 | `analysis/` | result loading, statistics, figures |
 | `tests/` | unit tests |
-| `实验记录.md` | lab notebook (Chinese) |
 
 Results are written to `results/<exp_name>/<dataset>/[<noise>_<level>/]seed<s>/`:
 `result.json` (config, hyper-parameters, seeds, metrics per round and method),
