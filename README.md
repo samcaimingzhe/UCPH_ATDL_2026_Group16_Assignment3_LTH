@@ -1,11 +1,15 @@
 # Lottery Tickets for Tabular MLPs
+[**NDAK24003U Advanced Topics in Deep Learning (ATDL)**](https://kurser.ku.dk/course/ndak24003u) --- Assignment 3
+
+Paper: [The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks](https://arxiv.org/abs/1803.03635)
+
+Group 16 contributors: Mingzhe Cai; Shang Xi; Yusheng Lu; Chenze Zhang;
 
 Code for the course report *When do lottery tickets exist in tabular MLPs? Tuning decides,
-feature selection may explain* (University of Copenhagen, ATDL 2026, Group 16, Assignment 3).
+feature selection may explain*.
 
-- **Authors:** Mingzhe Cai, Shang Xi, Yusheng Lu, Chenze Zhang
-- **Raw results:** [Hugging Face dataset](https://huggingface.co/datasets/samcaimingzhe/UCPH_ATDL_2026_Group16_Assignment3_LTH)
-  (all runs used in the report, see [Raw results](#raw-results))
+
+- **Results:** [Hugging Face dataset](https://huggingface.co/datasets/samcaimingzhe/UCPH_ATDL_2026_Group16_Assignment3_LTH)
 
 We test the Lottery Ticket Hypothesis (LTH) on MLPs for tabular classification. We run
 iterative magnitude pruning (IMP) with weight rewinding on 35 TabArena classification datasets
