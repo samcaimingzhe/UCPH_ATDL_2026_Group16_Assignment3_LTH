@@ -1,18 +1,33 @@
 # Lottery Tickets for Tabular MLPs
 
 Code for testing the Lottery Ticket Hypothesis (LTH) on MLPs for tabular classification:
-iterative magnitude pruning (IMP) with weight rewinding on 8 TabArena datasets, against
-dense, regularised and random-mask controls, under clean and noisy data.
+iterative magnitude pruning (IMP) with weight rewinding on 35 TabArena classification
+datasets, in two training regimes (per-dataset **tuned** MLP and **untuned** fixed 2 x 512
+MLP), against re-initialised and random-mask controls and regularised dense baselines.
 
-**Short answer.** Tickets exist and beat random masks of the same sparsity, but their
-advantage over a tuned dense MLP is matched by tuned L1 / strong weight decay. Pruning
-learns per-layer sparsity rather than a stable set of connections; it tracks feature
-importance only weakly and does not reliably cut injected uninformative features.
-Tickets found on clean data transfer well to label-noise data (better than running IMP on
-the noisy data). Details in `paper/main.tex`.
+## Main findings
 
-Results (≈42k trained networks, 3.5 GB) are on Hugging Face:
-[`samcaimingzhe/lth_tabular_results`](https://huggingface.co/datasets/samcaimingzhe/lth_tabular_results).
+| Question | Tuned MLP | Untuned 2 x 512 MLP |
+|---|---|---|
+| Ticket (round 15, 3.5% of weights) vs. random layer-wise mask, datasets better / worse | **18 / 3** | 3 / **17** |
+| Ticket vs. reinit, better / worse | **13 / 3** | 3 / **17** |
+| Val-best ticket vs. dense, better / worse | 2 / 0 (+0.63 pp, p < .001) | 2 / 0 (+0.28 pp, p = .003) |
+| Val-best ticket vs. dense + L1 / strong reg | not different | worse on 9 datasets |
+
+Per dataset: paired t-test over 5 seeds, Benjamini-Hochberg over the 35 datasets (q < 0.05).
+Across datasets: Wilcoxon signed-rank on seed means, Holm-corrected within each table.
+
+1. **Tickets exist only for tuned MLPs.** With tuning, the ticket beats random masks and
+   reinit of the same sparsity. Without tuning the dense network overfits, any sparsity acts
+   as a regulariser, and random masks beat the ticket. This holds at widths 256 / 512 / 1024.
+2. **Tickets do not beat standard regularisation.** They improve slightly on the plain dense
+   network but match (tuned) or trail (untuned) dense + L1 and dense + strong weight decay.
+3. **Feature selection in the input layer (tentative).** In the tuned regime, how well the
+   input-layer mask agrees with random-forest *impurity* importance predicts the ticket's
+   advantage over a random mask (Spearman 0.59, p < 0.001, 35 datasets). With accuracy-based
+   *permutation* importance the relation is not significant (0.16, p = 0.36); that measure is
+   degenerate on imbalanced datasets, so this result is still open. The *amount* of input
+   pruning does not predict the benefit under either measure.
 
 ## Setup
 
@@ -24,27 +39,38 @@ python -m pytest -q tests        # 24 tests
 Datasets are downloaded from OpenML on first use and cached in `cache/`. A GPU is used if
 available; runs are deterministic (`CUBLAS_WORKSPACE_CONFIG`, deterministic algorithms).
 
-To use the published results instead of re-running:
-
-```bash
-hf download samcaimingzhe/lth_tabular_results --repo-type dataset --local-dir results
-```
-
 ## Reproducing
 
-Every script skips runs whose `result.json` already exists, so all steps can be resumed.
+Every step skips runs whose `result.json` already exists, so all scripts can be resumed.
+The scripts assume two GPUs (`--gpus 0,1`); edit `G=` at the top to change this.
 
-```bash
-G="--gpus 0,1"
-python run_grid.py --stage tune --workers 4 $G     # Optuna, 50 trials per dataset, train/val only
-python run_grid.py --stage imp  --workers 8 $G     # IMP (global) + controls, 8 datasets x 5 seeds
-sh run_stage3.sh                                   # baselines, noise, pruning modes, k=0, analysis
-python paper/make_assets.py                        # paper figures and tables
-```
+| Script | What it runs | Paper |
+|---|---|---|
+| `experiments/01_tabarena35_tuned.sh` | 35 datasets, Optuna tuning, IMP + controls, dense baselines | Sec. 4.1-4.3 |
+| `experiments/02_tabarena35_untuned.sh` | 35 datasets, fixed 2 x 512 MLP, IMP + controls, dense baselines | Sec. 4.1-4.3 |
+| `experiments/03_width_robustness.sh` | untuned widths 256 / 512 / 1024 on 8 datasets | Appendix |
+| `experiments/04_case_study6.sh` | 6 datasets: noise, pruning modes, rewind k = 0 (needs 01) | Sec. 4.3, Appendix |
+| `experiments/05_analysis.sh` | all analyses and figures (CPU only) | all figures / tables |
 
-`run_stage3.sh` runs, in order: `--stage baselines`, `--stage noise`, `--stage imp` for each of
-`configs/mode_{uniform,single_input,single_middle,single_last}.yaml` and `configs/rewind0.yaml`,
-then `analysis/run_all.py`.
+Each shell script calls `run_grid.py`, which lists the pending jobs of one stage (`tune`,
+`imp`, `noise`, `baselines`) for a config and runs them in parallel, one GPU per worker.
+
+## Outputs for the paper (`paper_assets/`)
+
+| File | Content |
+|---|---|
+| `fig1_heatmap_compact.{pdf,png}` | ticket vs. each control / dense baseline, per dataset, tuned and untuned (main text) |
+| `fig1_heatmap.{pdf,png}` | the same with datasets as rows (appendix) |
+| `table1_ticket_vs_controls.csv` | ticket (round 15) vs. reinit and random masks |
+| `table2_ticket_vs_dense.csv` | val-best ticket vs. dense, dense + L1, dense + strong reg |
+| `table_s1_width.csv` | width robustness (untuned, 8 datasets) |
+| `per_dataset_{tuned,untuned}.csv` | seed-mean accuracies, differences, raw and BH p-values |
+| `mechanism35/` | input-layer mask vs. feature importance on 35 datasets; `*_perm` = permutation importance |
+| `complex6/` | case-study tables and figures (mask statistics, noise, pruning modes) |
+
+Generated by `analysis/paper_assets.py` and `analysis/mechanism35.py`; the case-study results
+come from `analysis/run_all.py --config configs/complex6.yaml --out analysis_complex6` and
+`analysis/complex6_summary.py`.
 
 ## Layout
 
@@ -52,43 +78,51 @@ then `analysis/run_all.py`.
 |---|---|
 | `common.py` | seeds, device, config loading (`base:` inheritance) |
 | `data/` | OpenML loader, preprocessing and splits, noise injection |
-| `models/mlp.py` | MLP: `[Linear → ReLU → Dropout] × depth → Linear`, no BatchNorm |
+| `models/mlp.py` | MLP: `[Linear -> ReLU -> Dropout] x depth -> Linear`, no normalisation |
 | `train.py` | training loop, rewind checkpoint, mask re-applied after every step |
 | `tune.py` | Optuna (TPE) tuning; writes `results/tuned/<dataset>.json` |
-| `pruning/masks.py` | magnitude pruning (global / uniform / single-layer), random masks |
+| `pruning/masks.py` | magnitude pruning (global / uniform / single layer), random masks |
 | `run_imp.py` | one IMP run with all controls |
-| `run_baselines.py` | dense + L1 and dense + strong weight decay baselines |
+| `run_baselines.py` | dense + L1 and dense + strong regularisation baselines |
 | `run_grid.py` | parallel job runner over datasets, seeds, noise levels and GPUs |
-| `analysis/` | result loading, statistics and figures (`run_all.py`) |
-| `configs/` | `default.yaml` (main), pruning-mode and rewind variants, old Grinsztajn setup |
-| `paper/` | ISBI paper source (`main.tex`, `refs.bib`, figures, tables, `make_assets.py`) |
+| `configs/` | `default.yaml` (tuned protocol), `tabarena35*.yaml`, `fixed_w*.yaml`, `complex6.yaml`, `c6_*.yaml` |
+| `experiments/` | launch scripts, one per experiment |
+| `analysis/` | result loading, statistics, figures |
+| `tests/` | unit tests |
+| `实验记录.md` | lab notebook (Chinese) |
 
 Results are written to `results/<exp_name>/<dataset>/[<noise>_<level>/]seed<s>/`:
 `result.json` (config, hyper-parameters, seeds, metrics per round and method),
 `masks.npz` (ticket masks per round) and `rewind.pt` (rewind checkpoint).
-Aggregated tables are in `results/analysis/tables/`.
+
+| Experiment directory | Content |
+|---|---|
+| `tuned/` | tuned hyper-parameters per dataset |
+| `imp_global/`, `baselines/` | tuned regime: clean runs (35 datasets) and noise runs (6 case-study datasets) |
+| `imp_fixed_w{256,512,1024}/`, `baselines_fixed_w*/` | untuned regime (512: 35 datasets; 256 / 1024: 8) |
+| `imp_uniform/`, `imp_single_{input,middle,last}/`, `imp_global_rw0/` | case study: pruning modes and k = 0 |
 
 ## Protocol
 
-- **Data.** 8 TabArena-v0.1 binary/multiclass datasets (OpenML suite 457): credit-g,
-  qsar-biodeg, students_dropout, churn, Bank_Customer_Churn, heloc, jm1, online_shoppers.
-  Split with `split_seed=0`: 70% train (capped at 10k rows), the rest 30% val / 70% test.
-  Numeric columns get a quantile (normal) transform fit on train, categoricals are one-hot
-  encoded; a `feature_map` from input unit to original feature is kept in every result.
-- **Seeds.** split 0; model 42–46; noise `1000 + level index`; mask `2000 + model seed`.
-- **Tuning.** 50 TPE trials per dataset on train/val (depth 1–8, width 16–1024, lr, weight
-  decay, dropout, batch size), early stopping on val loss. The hyper-parameters and the epoch
-  count (best epoch, at least 50) are then frozen for every run on that dataset, including
-  noisy ones.
-- **IMP.** 15 rounds, 20% of the remaining weights per round (output layer 10%), rewind to
-  step k = 2% of training (or k = 0). Kept counts are `round(N · (1 − p)^r)`, so masks are
-  nested and exact. AdamW; the mask is re-applied after every optimizer step.
+- **Data.** 35 of the 38 TabArena-v0.1 classification tasks (OpenML suite 457); excluded
+  Amazon_employee_access (high-cardinality categoricals), kddcup09_appetency and hiva_agnostic
+  (extreme class imbalance). Split with `split_seed=0`: 70% train (capped at 10k rows), the rest
+  30% val / 70% test. Numerical columns: median imputation and a quantile (normal) transform
+  fitted on train. Categorical columns: one-hot, at most 64 levels (rarer levels pooled).
+  Unmarked string columns become days since 1970 if > 99% parse as dates, else categorical.
+  A `feature_map` from input unit to original variable is stored in every result.
+- **Seeds.** split 0; model 42-46; noise `1000 + level index`; mask `2000 + model seed`.
+- **Tuned regime.** 50 TPE trials per dataset on train/val (depth 1-8, width 16-1024,
+  lr 1e-5-1e-2, weight decay 1e-8-1e-3, dropout 0-0.5, batch size 256/512/1024), early
+  stopping on val loss; the epoch count (best epoch, at least 50) is then fixed.
+- **Untuned regime.** depth 2, width 512 (256 / 1024 for robustness), lr 1e-3, no weight
+  decay, no dropout, batch size 256, 100 epochs.
+- **IMP.** 15 rounds, 20% of the remaining hidden weights per round, ranked globally (output
+  layer 10%); rewind to step k = 2% of training. Kept counts are `round(N * 0.8^r)`, so masks
+  are nested and exact. AdamW; the mask is re-applied after every optimizer step.
 - **Controls.** dense (round 0 of the same run), reinit, random layer-wise mask, random global
-  mask (both from the same rewind checkpoint and data order as the ticket), dense + L1,
-  dense + strong weight decay (strength selected on val), and on noisy data the clean ticket.
-- **Noise.** label flips, Gaussian noise on numeric features, added uninformative features
-  (permuted or Gaussian); applied to train and val only, test stays clean.
-- **Metrics.** accuracy, log loss, ECE (15 bins), Brier; per-layer sparsity.
-- **Statistics.** Paired Wilcoxon tests across datasets (n = 8). With 5 seeds the smallest
-  possible two-sided p within a dataset is 0.0625, so per-dataset tests are descriptive only.
-
+  mask (same rewind checkpoint and data order as the ticket), dense + L1, dense + strong
+  dropout / weight decay (strength selected on val).
+- **Noise (case study).** label flips, Gaussian noise on numerical features, added
+  uninformative columns (row-permuted copies); applied to train and val only.
+- **Metrics.** accuracy (primary), log loss, ECE (15 bins), Brier; per-layer sparsity.

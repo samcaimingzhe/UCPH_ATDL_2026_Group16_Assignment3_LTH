@@ -25,9 +25,12 @@ from scipy.stats import spearmanr, wilcoxon
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from analysis import style
 from analysis.load import feature_kept, iter_runs, load_results
 from common import ROOT, load_config
 from metrics import primary_metric
+
+style.apply()
 from run_imp import load_data
 
 STYLE = {
@@ -107,8 +110,11 @@ def mask_tables(cfg, exp_dir, n_trees=300):
     with Spearman vs RF importance and per-feature kept counts."""
     rows, kept_rows = [], []
     rf_cache = {}
+    subset = cfg.get("dataset_subset")
     for r, masks, _ in iter_runs(exp_dir):
         ds, seed = r["dataset"], r["seeds"]["model_seed"]
+        if subset and ds not in subset:
+            continue
         nk, nl = r["noise"]["kind"], r["noise"]["level"]
         key = (ds, nk, nl, seed)
         if key not in rf_cache:
@@ -296,15 +302,21 @@ def main():
     ap.add_argument("--config", default=str(ROOT / "configs/default.yaml"))
     ap.add_argument("--meta-round", type=int, default=10)
     ap.add_argument("--skip-masks", action="store_true")
+    ap.add_argument("--out", default=None, help="output dir under results_dir (default: analysis)")
     args = ap.parse_args()
     cfg = load_config(args.config)
     root = ROOT / cfg["results_dir"]
-    out = root / "analysis"
+    out = root / (args.out or "analysis")
     (out / "tables").mkdir(parents=True, exist_ok=True)
+    subset = cfg.get("dataset_subset")
 
-    df = load_results(root / cfg["exp_name"])
+    def load(d):
+        x = load_results(d)
+        return x[x.dataset.isin(subset)] if subset and not x.empty else x
+
+    df = load(root / cfg["exp_name"])
     bdir = root / cfg["baselines"]["exp_name"]
-    base = load_results(bdir) if bdir.exists() else None
+    base = load(bdir) if bdir.exists() else None
     df.to_parquet(out / "tables" / "imp_results.parquet")
     print(f"{len(df)} rows, datasets={sorted(df.dataset.unique())}")
 
@@ -313,7 +325,7 @@ def main():
     for mode in ("uniform", "single_input", "single_middle", "single_last"):
         md = root / f"imp_{mode}"
         if md.exists():
-            dm = load_results(md)
+            dm = load(md)
             fig_curves(dm, base[base.noise_kind == "none"] if base is not None else None, out / f"mode_{mode}")
             fig_layer_sparsity(dm, out, mode)
     wilcoxon_tables(df, base, out)

@@ -1,6 +1,6 @@
-base: default.yaml
-exp_name: imp_single_middle
+base: complex6.yaml
+exp_name: imp_uniform
 pruning:
-  mode: single_middle
+  mode: uniform
 controls: [reinit, random_mask_layerwise, random_mask_global]
 save_full_rewind: false

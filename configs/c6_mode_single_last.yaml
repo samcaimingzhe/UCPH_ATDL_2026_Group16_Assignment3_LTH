@@ -1,6 +1,6 @@
-base: default.yaml
-exp_name: imp_single_input
+base: complex6.yaml
+exp_name: imp_single_last
 pruning:
-  mode: single_input
+  mode: single_last
 controls: [reinit, random_mask_layerwise, random_mask_global]
 save_full_rewind: false

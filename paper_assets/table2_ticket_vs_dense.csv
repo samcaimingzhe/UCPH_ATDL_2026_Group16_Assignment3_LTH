@@ -1,0 +1,7 @@
+setting,method,vs,n,mean_diff_pp,sig_better_bh,sig_worse_bh,sig_better_raw,sig_worse_raw,mean_wins,wilcoxon_p,wilcoxon_p_holm
+tuned,ticket_valsel,dense,35,0.63485,2,0,4,1,27,0.00015,0.00088
+tuned,ticket_valsel,dense_l1,35,0.1861,1,2,4,4,26,0.03623,0.14492
+tuned,ticket_valsel,dense_strong_reg,35,0.23411,1,1,3,2,24,0.04277,0.14492
+untuned,ticket_valsel,dense,35,0.28339,2,0,5,0,24,0.0006,0.00302
+untuned,ticket_valsel,dense_l1,35,-0.60218,0,9,1,9,17,0.16837,0.16837
+untuned,ticket_valsel,dense_strong_reg,35,-0.55302,1,9,2,13,12,0.03793,0.14492

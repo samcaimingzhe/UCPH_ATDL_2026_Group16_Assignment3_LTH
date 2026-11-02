@@ -1,5 +1,5 @@
-# original LTH: rewind to initialization (k = 0), as a control for rewind_frac = 0.02
-base: default.yaml
+# original LTH: rewind to initialization (k = 0)
+base: complex6.yaml
 exp_name: imp_global_rw0
 pruning:
   rewind_frac: 0.0

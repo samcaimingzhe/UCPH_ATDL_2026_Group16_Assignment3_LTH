@@ -17,6 +17,9 @@ def tuned_path(cfg, dataset):
 
 
 def load_tuned(cfg, dataset):
+    """Tuned hyper-parameters, or the untuned `fixed_hp` of the config if it sets one."""
+    if cfg.get("fixed_hp"):
+        return {"hp": dict(cfg["fixed_hp"])}
     return json.loads(tuned_path(cfg, dataset).read_text())
 
 

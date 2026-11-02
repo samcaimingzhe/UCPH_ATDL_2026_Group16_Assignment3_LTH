@@ -28,7 +28,7 @@ def noise_settings(cfg):
 
 def enumerate_jobs(cfg, stage):
     jobs = []
-    for ds in cfg["datasets"]:
+    for ds in cfg.get("dataset_subset") or cfg["datasets"]:  # subset: run only these, keep the full table
         if stage == "tune":
             if not tuned_path(cfg, ds).exists():
                 jobs.append(["tune.py", "--dataset", ds])

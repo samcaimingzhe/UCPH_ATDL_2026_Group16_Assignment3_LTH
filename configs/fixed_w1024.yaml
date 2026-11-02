@@ -1,0 +1,19 @@
+# untuned fixed MLP (original-LTH style): input -> 1024 -> 1024 -> classes, no regularisation
+base: default.yaml
+exp_name: imp_fixed_w1024
+fixed_hp:
+  depth: 2
+  width: 1024
+  lr: 1.0e-3
+  weight_decay: 0.0
+  dropout: 0.0
+  batch_size: 256
+  epochs: 100
+  scheduler: none
+  layernorm: false
+controls: [reinit, random_mask_layerwise, random_mask_global]
+save_full_rewind: false
+noise:
+  levels: {label_flip: [0], feature_gaussian: [0], uninformative: [0]}  # clean data only
+baselines:
+  exp_name: baselines_fixed_w1024

@@ -1,0 +1,13 @@
+# Detailed experiments on 6 of the 35 TabArena datasets, chosen from the clean tuned results
+# (results/analysis/tables/tabarena35_selection_v2.csv): best dense method picked on val,
+# ticket vs it consistent in >= 4/5 seeds on accuracy and log loss, majority-collapse excluded.
+#   ticket helps: splice, SDSS17, in_vehicle_coupon
+#   ticket does not help: heloc, MIC, churn
+# Same experiment names as default.yaml: clean runs, and heloc / churn noise runs, are reused.
+base: tabarena35.yaml
+dataset_subset: [splice, SDSS17, in_vehicle_coupon, heloc, MIC, churn]
+noise:
+  levels:
+    label_flip: [0, 0.1, 0.2, 0.4]
+    feature_gaussian: [0, 0.1, 0.5, 1.0]
+    uninformative: [0, 0.5, 1.0, 2.0]

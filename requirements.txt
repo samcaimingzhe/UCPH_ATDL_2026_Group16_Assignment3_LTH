@@ -4,6 +4,7 @@ pandas>=2.3
 pyarrow>=26.0
 scikit-learn>=1.9
 scipy>=1.18
+statsmodels>=0.14
 optuna>=5.0
 openml>=0.15
 matplotlib>=3.11
