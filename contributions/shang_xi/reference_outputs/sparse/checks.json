@@ -1,0 +1,14 @@
+{
+  "verified_hashes": 350,
+  "density_ceiling": 0.2,
+  "feasible_run_counts": {
+    "5": 0,
+    "8": 340,
+    "10": 350,
+    "15": 350
+  },
+  "bootstrap": 10000,
+  "seed": 20261105,
+  "uncertainty": "pointwise dataset-cluster percentile; fixed split",
+  "scope": "post-hoc sensitivity; ceiling not identical densities; no wall-clock measurement"
+}

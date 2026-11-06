@@ -1,0 +1,8 @@
+% Replace only Shang Xi's own cost snippet after review.
+\subsection{Q4: Search-budget trade-off}
+\label{sec:shang-cost}
+We replay the 350 archived IMP runs, selecting candidates by validation accuracy (ties favor earlier rounds). For dense horizon $T$ and rewind step $k$, we account for $C(b)=T+b(T-k)$ optimizer updates, charging the complete prefix. Controls, hyperparameter search, evaluation, and data handling are excluded. We average paired test-accuracy differences over five seeds within each dataset and compute pointwise 95\% intervals using 10,000 dataset-cluster bootstrap resamples.
+
+Unrestricted full-budget selection returns dense round zero in 38/175 tuned and 32/175 fixed runs. We therefore restrict candidates to nonzero rounds retaining at most 20\% of the recorded prunable weights; all runs are eligible by round 10.
+
+Comparing $b=10$ with $b=15$ reduces accounted updates by 31.2\%. Mean accuracy differences are $-0.2289$ percentage points (95\% interval $[-0.4237,-0.0684]$) for tuned and $-0.1457$ $[-0.3041,0.0141]$ for fixed MLPs. This post-hoc check imposes a common density ceiling; selected densities still differ. The accounting does not establish elapsed-time speedup, equivalence, or winning-initialization effects. Full tables and the unrestricted-budget analysis accompany the code.

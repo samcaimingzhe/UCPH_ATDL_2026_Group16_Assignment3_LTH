@@ -1,0 +1,15 @@
+{
+  "created_utc": "20261106T103956Z",
+  "python": "3.9.6 (default, Jan  9 2026, 11:03:41) \n[Clang 17.0.0 (clang-1700.6.4.2)]",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "dependencies": {
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "matplotlib": "3.9.4",
+    "PyYAML": "6.0.3"
+  },
+  "scope": "archived-result reanalysis, no model training",
+  "fixed_max_difference": 0.0,
+  "sparse_max_difference": 0.0,
+  "within_1e_minus_9": true
+}
