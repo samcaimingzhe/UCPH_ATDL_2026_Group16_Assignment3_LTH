@@ -1,0 +1,42 @@
+# All 38 TabArena-v0.1 classification tasks except Amazon_employee_access (high-cardinality
+# categoricals), kddcup09_appetency and hiva_agnostic (extreme class imbalance). Clean data,
+# no tuning: the fixed 2 x 512 MLP of fixed_w512.yaml, IMP (global) + controls, dense L1 /
+# strong-reg baselines. Same experiment names as fixed_w512.yaml, so its 8 datasets are reused.
+base: fixed_w512.yaml
+datasets:
+  blood-transfusion: 363621
+  diabetes: 363629
+  anneal: 363614
+  credit-g: 363626
+  maternal_health_risk: 363685
+  qsar-biodeg: 363696
+  website_phishing: 363707
+  Fitness_Club: 363671
+  MIC: 363711
+  good_customer: 363682
+  Marketing_Campaign: 363684
+  hazelnut: 363674
+  seismic-bumps: 363700
+  splice: 363702
+  Bioresponse: 363620
+  students_dropout: 363704
+  churn: 363623
+  polish_bankruptcy: 363694
+  taiwanese_bankruptcy: 363706
+  NATICUSdroid: 363689
+  coil2000: 363624
+  Bank_Customer_Churn: 363619
+  heloc: 363676
+  jm1: 363712
+  ecommerce_shipping: 363632
+  online_shoppers: 363691
+  in_vehicle_coupon: 363681
+  HR_Analytics: 363679
+  credit_card_default: 363627
+  bank-marketing: 363618
+  Diabetes130US: 363630
+  APSFailure: 363616
+  SDSS17: 363699
+  airline_satisfaction: 363628
+  GiveMeSomeCredit: 363673
+

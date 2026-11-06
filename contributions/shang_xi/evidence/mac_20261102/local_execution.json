@@ -1,0 +1,15 @@
+{
+  "author_label": "Shang Xi",
+  "execution_identity": "Identity is self-attested; this file does not prove who operated the machine.",
+  "hf_revision": "95216e75a0d2ae04fed0a7f68b958cc1fa3145c9",
+  "dependencies": {
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "matplotlib": "3.9.4",
+    "PyYAML": "6.0.3"
+  },
+  "python": "3.9.6 (default, Jan  9 2026, 11:03:41) \n[Clang 17.0.0 (clang-1700.6.4.2)]",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "created_at_utc": "20261102T133316Z",
+  "max_difference": 0.0
+}

@@ -1,0 +1,43 @@
+["/Users/a1/Desktop/Shang_Xi_Final_Handoff_2026-11-05/local_run/.venv/bin/python", "-m", "analysis.compute_tradeoff", "analyze", "--results-root", "/Users/a1/Desktop/deep learning/\u9488\u5bf9group assignment\u7684/assignment3/\u6211\u505a\u7684/LTH_analysis/inputs/hf_results", "--bootstrap", "10000", "--out", "/Users/a1/Desktop/Shang_Xi_Final_Handoff_2026-11-05/local_run/runs/review_20261106T103956Z_e199f3/fixed"]
+{"valid": 350, "missing": 0, "invalid": 0}
+["/Users/a1/Desktop/Shang_Xi_Final_Handoff_2026-11-05/local_run/.venv/bin/python", "sparse_budget_audit.py", "--root", "/Users/a1/Desktop/deep learning/\u9488\u5bf9group assignment\u7684/assignment3/\u6211\u505a\u7684/LTH_analysis/inputs/hf_results", "--out", "/Users/a1/Desktop/Shang_Xi_Final_Handoff_2026-11-05/local_run/runs/review_20261106T103956Z_e199f3/sparse"]
+[
+  {
+    "experiment": "imp_global",
+    "n_datasets": 35,
+    "mean_delta_accuracy_pp": -0.22885357632550538,
+    "median_delta_accuracy_pp": 0.0,
+    "ci_low_pp": -0.42373369214351053,
+    "ci_high_pp": -0.06842018337001032,
+    "datasets_positive": 12,
+    "datasets_tied": 9,
+    "datasets_negative": 14,
+    "mean_cost10": 10.801892280444202,
+    "mean_cost15": 15.702838420666305,
+    "mean_density10": 0.1517825801639369,
+    "mean_density15": 0.11682953061326966,
+    "mean_sparse10_vs_dense_pp": 0.3550226729291258,
+    "mean_sparse15_vs_dense_pp": 0.5838762492546312,
+    "mean_delta_log_loss": 0.03426010508622443,
+    "accounted_update_reduction_pct": 31.210574858695807
+  },
+  {
+    "experiment": "imp_fixed_w512",
+    "n_datasets": 35,
+    "mean_delta_accuracy_pp": -0.14568561860012302,
+    "median_delta_accuracy_pp": -0.11029411764704733,
+    "ci_low_pp": -0.30408151879793177,
+    "ci_high_pp": 0.014074574676023058,
+    "datasets_positive": 11,
+    "datasets_tied": 2,
+    "datasets_negative": 22,
+    "mean_cost10": 10.800000000000002,
+    "mean_cost15": 15.700000000000003,
+    "mean_density10": 0.1458294576014321,
+    "mean_density15": 0.09121695680423882,
+    "mean_sparse10_vs_dense_pp": -0.0098759503227749,
+    "mean_sparse15_vs_dense_pp": 0.13580966827734814,
+    "mean_delta_log_loss": 0.0961229724117688,
+    "accounted_update_reduction_pct": 31.21019108280254
+  }
+]
